@@ -13,7 +13,9 @@ type Entry struct {
 }
 
 func (entry *Entry) Save() (*Entry, error) {
-	tx := database.Database.Begin()
+	tx := database.Database.Session(&gorm.Session{PrepareStmt: true})
+	tx = tx.Begin()
+
 	defer func() {
 		if r := recover(); r != nil {
 			tx.Rollback()
